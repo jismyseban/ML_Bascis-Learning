@@ -1,0 +1,61 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+n     <- 200 # number of observations
+bias  <- 4
+slope <- 3.5
+dot   <- `%*%` # defined for personal preference 
+
+x   <- rnorm(n) * 2
+x_b <- cbind(x, rep(1, n))
+y   <- bias + slope * x + rnorm(n)
+df  <- data_frame(x = x,  y = y)
+
+learning_rate <- 0.05
+n_iterations  <- 100
+theta         <- matrix(c(20, 20))
+
+b0    <- vector("numeric", length = n_iterations)
+b1    <- vector("numeric", length = n_iterations)
+sse_i <- vector("numeric", length = n_iterations)
+```
+
+
+
+```{r}
+for (iteration in seq_len(n_iterations)) { 
+  yhat               <- dot(x_b, theta)          # predict using weights in theta
+  residuals_b        <- yhat - y                 # calculate the residuals
+  gradients          <- 2/n * dot(t(x_b), residuals_b) # calculate the gradients of MSE w.r.t model weights 
+  theta              <- theta - learning_rate * gradients # update theta 
+  
+  sse_i[[iteration]] <- sum((y - dot(x_b, theta))**2)
+  b0[[iteration]]    <- theta[2]
+  b1[[iteration]]    <- theta[1]
+  
+}
+
+model_i <- data.frame(model_iter = 1:n_iterations, 
+                      sse = sse_i, 
+                      b0 = b0, 
+                      b1 = b1)
+
+
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
