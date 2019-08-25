@@ -19,8 +19,8 @@ dot   <- `%*%` # defined for personal preference
 x   <- rnorm(n) * 2
 x_b <- cbind(x, rep(1, n))
 y   <- bias + slope * x + rnorm(n)
-df  <- data_frame(x = x,  y = y)
-
+#df  <- data_frame(x = x,  y = y)
+df  <- tibble(x = x,  y = y)
 learning_rate <- 0.05
 n_iterations  <- 100
 theta         <- matrix(c(20, 20))
